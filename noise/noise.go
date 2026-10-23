@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"math/rand"
+	"sync"
 
 	"github.com/amcajal/bild_modfor8bhg/parallel"
 	"github.com/amcajal/bild_modfor8bhg/perlin"
@@ -25,6 +26,10 @@ var (
 // When nil, the global rand package functions are used.
 var randSource *rand.Rand
 
+// randMu protects randSource from concurrent access, since parallel.Line
+// dispatches noise functions across multiple goroutines simultaneously.
+var randMu sync.Mutex
+
 // SetRandSource sets a custom random source for all noise and perlin
 // generation functions. Call this with a seeded *rand.Rand before
 // generating any noise to ensure deterministic output.
@@ -37,13 +42,22 @@ func SetRandSource(r *rand.Rand) {
 func rebuildFns() {
 	if randSource != nil {
 		Uniform = func() uint8 {
-			return uint8(randSource.Intn(256))
+			randMu.Lock()
+			v := uint8(randSource.Intn(256))
+			randMu.Unlock()
+			return v
 		}
 		Binary = func() uint8 {
-			return 0xFF * uint8(randSource.Intn(2))
+			randMu.Lock()
+			v := 0xFF * uint8(randSource.Intn(2))
+			randMu.Unlock()
+			return v
 		}
 		Gaussian = func() uint8 {
-			return uint8(randSource.NormFloat64()*32.0 + 128.0)
+			randMu.Lock()
+			v := uint8(randSource.NormFloat64()*32.0 + 128.0)
+			randMu.Unlock()
+			return v
 		}
 	} else {
 		Uniform = func() uint8 {
