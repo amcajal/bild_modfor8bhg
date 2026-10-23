@@ -36,7 +36,7 @@ type Perlin struct {
 // "beta" is the harmonic scaling/spacing, typically 2, n is the
 // number of iterations and seed is the math.rand seed value to use
 func NewPerlin(alpha, beta float64, n int, seed int64) *Perlin {
-	return NewPerlinRandSource(alpha, beta, n, rand.NewSource(seed))
+	return NewPerlinRandSource(alpha, beta, n)
 }
 
 // NewPerlinRandSource creates new Perlin noise generator
@@ -44,7 +44,7 @@ func NewPerlin(alpha, beta float64, n int, seed int64) *Perlin {
 // Typically it is 2, As this approaches 1 the function is noisier.
 // "beta" is the harmonic scaling/spacing, typically 2, n is the
 // number of iterations and source is source of pseudo-random int64 values
-func NewPerlinRandSource(alpha, beta float64, n int, source rand.Source) *Perlin {
+func NewPerlinRandSource(alpha, beta float64, n int) *Perlin {
 	var p Perlin
 	var i int
 
@@ -52,27 +52,25 @@ func NewPerlinRandSource(alpha, beta float64, n int, source rand.Source) *Perlin
 	p.beta = beta
 	p.n = n
 
-	r := rand.New(source)
-
 	for i = 0; i < B; i++ {
 		p.p[i] = i
-		p.g1[i] = float64((r.Int()%(B+B))-B) / B
+		p.g1[i] = float64((rand.Int()%(B+B))-B) / B
 
 		for j := 0; j < 2; j++ {
-			p.g2[i][j] = float64((r.Int()%(B+B))-B) / B
+			p.g2[i][j] = float64((rand.Int()%(B+B))-B) / B
 		}
 
 		normalize2(&p.g2[i])
 
 		for j := 0; j < 3; j++ {
-			p.g3[i][j] = float64((r.Int()%(B+B))-B) / B
+			p.g3[i][j] = float64((rand.Int()%(B+B))-B) / B
 		}
 		normalize3(&p.g3[i])
 	}
 
 	for ; i > 0; i-- {
 		k := p.p[i]
-		j := r.Int() % B
+		j := rand.Int() % B
 		p.p[i] = p.p[j]
 		p.p[j] = k
 	}

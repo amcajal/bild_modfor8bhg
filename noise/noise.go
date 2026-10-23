@@ -4,7 +4,6 @@ import (
 	"image"
 	"image/color"
 	"math/rand"
-	"time"
 
 	"github.com/anthonynsimon/bild/parallel"
 	"github.com/anthonynsimon/bild/perlin"
@@ -81,8 +80,6 @@ func Generate(width, height int, o *Options) *image.RGBA {
 		}
 		monochrome = o.Monochrome
 	}
-
-	rand.Seed(time.Now().UTC().UnixNano())
 
 	if monochrome {
 		fillMonochrome(dst, noiseFn)
