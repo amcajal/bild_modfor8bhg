@@ -5,8 +5,8 @@ import (
 	"image/color"
 	"math/rand"
 
-	"github.com/anthonynsimon/bild/parallel"
-	"github.com/anthonynsimon/bild/perlin"
+	"github.com/amcajal/bild_modfor8bhg/parallel"
+	"github.com/amcajal/bild_modfor8bhg/perlin"
 )
 
 // Fn is a noise function that generates values between 0 and 255.
