@@ -1,9 +1,10 @@
-module github.com/anthonynsimon/bild
+module github.com/amcajal/bild_modfor8bhg
 
 go 1.25.0
 
 require (
 	github.com/HugoSmits86/nativewebp v1.3.0
+	github.com/anthonynsimon/bild v0.17.1
 	github.com/spf13/cobra v1.10.2
 	golang.org/x/image v0.45.0
 )
