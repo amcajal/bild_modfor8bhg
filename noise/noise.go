@@ -21,16 +21,45 @@ var (
 	Gaussian Fn
 )
 
+// randSource is the random source used by all noise functions.
+// When nil, the global rand package functions are used.
+var randSource *rand.Rand
+
+// SetRandSource sets a custom random source for all noise and perlin
+// generation functions. Call this with a seeded *rand.Rand before
+// generating any noise to ensure deterministic output.
+// Pass nil to revert to the global rand source.
+func SetRandSource(r *rand.Rand) {
+	randSource = r
+	rebuildFns()
+}
+
+func rebuildFns() {
+	if randSource != nil {
+		Uniform = func() uint8 {
+			return uint8(randSource.Intn(256))
+		}
+		Binary = func() uint8 {
+			return 0xFF * uint8(randSource.Intn(2))
+		}
+		Gaussian = func() uint8 {
+			return uint8(randSource.NormFloat64()*32.0 + 128.0)
+		}
+	} else {
+		Uniform = func() uint8 {
+			return uint8(rand.Intn(256))
+		}
+		Binary = func() uint8 {
+			return 0xFF * uint8(rand.Intn(2))
+		}
+		Gaussian = func() uint8 {
+			return uint8(rand.NormFloat64()*32.0 + 128.0)
+		}
+	}
+}
+
 func init() {
-	Uniform = func() uint8 {
-		return uint8(rand.Intn(256))
-	}
-	Binary = func() uint8 {
-		return 0xFF * uint8(rand.Intn(2))
-	}
-	Gaussian = func() uint8 {
-		return uint8(rand.NormFloat64()*32.0 + 128.0)
-	}
+	rebuildFns()
 }
 
 // Options to configure the noise generation.
@@ -48,7 +77,7 @@ func GeneratePerlin(width, height int, frequency float64) *image.RGBA {
 	alpha, beta, n := 2., 2., 3
 
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
-	p := perlin.NewPerlin(alpha, beta, n, rand.Int63())
+	p := perlin.NewPerlinRandSource(alpha, beta, n, randSource)
 
 	for x := 0.; x < float64(height); x++ {
 		for y := 0.; y < float64(width); y++ {
