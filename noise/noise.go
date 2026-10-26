@@ -93,8 +93,8 @@ func GeneratePerlin(width, height int, frequency float64) *image.RGBA {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	p := perlin.NewPerlinRandSource(alpha, beta, n, randSource)
 
-	for x := 0.; x < float64(height); x++ {
-		for y := 0.; y < float64(width); y++ {
+	for y := 0.; y < float64(height); y++ {
+		for x := 0.; x < float64(width); x++ {
 			t := p.Noise2D((x/10)*frequency, (y/10)*frequency)
 			img.Set(int(x), int(y), color.NRGBA{
 				R: uint8((t + 1) * 126),
