@@ -54,5 +54,5 @@ noise.SetRandSource(nil)
 
 ## Original library
 
-All credit for the original library goes to [Anthony Carapetis](https://github.com/anthonynsimon) and the `bild` contributors.
+All credit for the original library goes to [anthonynsimon](https://github.com/anthonynsimon) and the `bild` contributors.
 See the original [README](https://github.com/anthonynsimon/bild/blob/master/README.md) and [LICENSE](https://github.com/anthonynsimon/bild/blob/master/LICENSE) for full documentation and licensing terms.
